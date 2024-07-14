@@ -1,31 +1,44 @@
 package main
 
-var users = make([]UserData, 0)
-
-type UserData struct {
-	userId    int
-	firstName string
-	lastName  string
-	age       int
-	email     string
-}
+import "fmt"
 
 func main() {
 
-	createUser()
+	repo := newUserRepository()
+	service := newUserServise(repo)
 
-	createUser()
+	service.createUser()
+	service.createUser()
 
-	createUser()
+	service.retrieveAllUsers()
 
-	retrieveAllUsers()
+	service.retrieveUserById()
 
-	retrieveUserById()
+	service.updateUser()
 
-	updateUser()
+	service.deleteUser()
 
-	deleteUser()
+	service.retrieveAllUsers()
 
-	retrieveAllUsers()
+}
 
+func getUserInputs() (string, string, int, string) {
+	var firstName string
+	var lastName string
+	var age int
+	var email string
+
+	fmt.Println("enter your first name : ")
+	fmt.Scan(&firstName)
+
+	fmt.Println("enter your last name : ")
+	fmt.Scan(&lastName)
+
+	fmt.Println("enter your age : ")
+	fmt.Scan(&age)
+
+	fmt.Println("enter your email : ")
+	fmt.Scan(&email)
+
+	return firstName, lastName, age, email
 }
