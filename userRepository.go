@@ -29,10 +29,10 @@ func (repo *UserRepository) deleteUser(id int) {
 	}
 }
 
-func (repo *UserRepository) updateUser(updatedUser UserData) {
+func (repo *UserRepository) updateUser(updateUser UserData) {
 	for i, user := range repo.users {
-		if user.userId == updatedUser.userId {
-			repo.users[i] = updatedUser
+		if user.userId == updateUser.userId {
+			repo.users[i] = updateUser
 			return
 		}
 	}

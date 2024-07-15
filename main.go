@@ -9,6 +9,7 @@ func main() {
 
 	service.createUser()
 	service.createUser()
+	service.createUser()
 
 	service.retrieveAllUsers()
 

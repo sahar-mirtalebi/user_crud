@@ -23,21 +23,13 @@ func (service *UserService) createUser() {
 		age:       age,
 		email:     email,
 	}
-
 	service.repo.addUser(user)
-	fmt.Printf("User %v created successfully\n", user)
-}
-
-func (service *UserService) deleteUser() {
-	var id int
-	fmt.Println("please give me the user id you want to delete: ")
-	fmt.Scan(&id)
-	service.repo.deleteUser(id)
+	fmt.Printf("user %v created successfully\n", user)
 }
 
 func (service *UserService) updateUser() {
 	var id int
-	fmt.Println("please give me the user id you want to update:")
+	fmt.Println("please give me the id you want to update :")
 	fmt.Scan(&id)
 
 	for _, user := range service.repo.users {
@@ -45,7 +37,7 @@ func (service *UserService) updateUser() {
 			firstName, lastName, age, email := getUserInputs()
 
 			updatedUser := UserData{
-				userId:    id,
+				userId:    rand.Intn(1000000),
 				firstName: firstName,
 				lastName:  lastName,
 				age:       age,
@@ -53,11 +45,19 @@ func (service *UserService) updateUser() {
 			}
 
 			service.repo.updateUser(updatedUser)
-			fmt.Println("User updated successfully")
 			return
-
 		}
+
 	}
+	fmt.Println("no such user")
+}
+
+func (service *UserService) deleteUser() {
+	var id int
+	fmt.Println("please give me the id you want to delete :")
+	fmt.Scan(&id)
+
+	service.repo.deleteUser(id)
 }
 
 func (service *UserService) retrieveAllUsers() {
@@ -69,13 +69,13 @@ func (service *UserService) retrieveAllUsers() {
 
 func (service *UserService) retrieveUserById() {
 	var id int
-	fmt.Println("please give me the user id you want to retrieve: ")
+	fmt.Println("please give me the id you want to retrieve : ")
 	fmt.Scan(&id)
 
 	user, found := service.repo.retrieveUserById(id)
 	if found {
-		fmt.Println("User found:", user)
+		fmt.Println(user)
 	} else {
-		fmt.Println("No such user")
+		fmt.Println("user not found")
 	}
 }
