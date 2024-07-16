@@ -1,45 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"user_CRUD/user"
+)
 
 func main() {
 
-	repo := newUserRepository()
-	service := newUserServise(repo)
+	repo := user.NewUserRepository()
+	service := user.NewUserServise(repo)
 
-	service.createUser()
-	service.createUser()
-	service.createUser()
+	userData := user.UserData{
+		FirstName: "sahar",
+		LastName:  "mirtalebi",
+		Age:       32,
+		Email:     "ss@gmail.com",
+	}
 
-	service.retrieveAllUsers()
+	service.CreateUser(userData)
 
-	service.retrieveUserById()
-
-	service.updateUser()
-
-	service.deleteUser()
-
-	service.retrieveAllUsers()
-
-}
-
-func getUserInputs() (string, string, int, string) {
-	var firstName string
-	var lastName string
-	var age int
-	var email string
-
-	fmt.Println("enter your first name : ")
-	fmt.Scan(&firstName)
-
-	fmt.Println("enter your last name : ")
-	fmt.Scan(&lastName)
-
-	fmt.Println("enter your age : ")
-	fmt.Scan(&age)
-
-	fmt.Println("enter your email : ")
-	fmt.Scan(&email)
-
-	return firstName, lastName, age, email
 }

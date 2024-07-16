@@ -1,18 +1,18 @@
-package main
+package user
 
 type UserData struct {
-	userId    int
-	firstName string
-	lastName  string
-	age       int
-	email     string
+	UserId    int
+	FirstName string
+	LastName  string
+	Age       int
+	Email     string
 }
 
 type UserRepository struct {
 	users []UserData
 }
 
-func newUserRepository() *UserRepository {
+func NewUserRepository() *UserRepository {
 	return &UserRepository{users: make([]UserData, 0)}
 }
 
@@ -22,7 +22,7 @@ func (repo *UserRepository) addUser(user UserData) {
 
 func (repo *UserRepository) deleteUser(id int) {
 	for i, user := range repo.users {
-		if user.userId == id {
+		if user.UserId == id {
 			repo.users = append(repo.users[:i], repo.users[i+1:]...)
 			return
 		}
@@ -31,7 +31,7 @@ func (repo *UserRepository) deleteUser(id int) {
 
 func (repo *UserRepository) updateUser(updateUser UserData) {
 	for i, user := range repo.users {
-		if user.userId == updateUser.userId {
+		if user.UserId == updateUser.UserId {
 			repo.users[i] = updateUser
 			return
 		}
@@ -44,7 +44,7 @@ func (repo *UserRepository) retrieveAllUsers() []UserData {
 
 func (repo *UserRepository) retrieveUserById(id int) (UserData, bool) {
 	for _, user := range repo.users {
-		if user.userId == id {
+		if user.UserId == id {
 			return user, true
 		}
 	}
