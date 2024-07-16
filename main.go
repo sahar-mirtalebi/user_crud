@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"user_CRUD/user"
 )
 
@@ -18,6 +19,7 @@ func main() {
 
 	service.CreateUser(userData)
 	service.CreateUser(userData)
-	service.RetrieveAllUsers()
+	users := service.RetrieveAllUsers()
+	fmt.Println(users)
 
 }

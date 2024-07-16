@@ -1,7 +1,5 @@
 package user
 
-import "fmt"
-
 type UserData struct {
 	UserId    int
 	FirstName string
@@ -46,7 +44,6 @@ func (repo *UserRepository) updateUser(updateUser UserData) {
 }
 
 func (repo *UserRepository) retrieveAllUsers() []UserData {
-	fmt.Println(repo.users) //for test
 	return repo.users
 }
 
