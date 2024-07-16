@@ -1,5 +1,7 @@
 package user
 
+import "fmt"
+
 type UserData struct {
 	UserId    int
 	FirstName string
@@ -16,8 +18,13 @@ func NewUserRepository() *UserRepository {
 	return &UserRepository{users: make([]UserData, 0)}
 }
 
-func (repo *UserRepository) addUser(user UserData) {
-	repo.users = append(repo.users, user)
+func (repo *UserRepository) addUser(userData UserData) {
+	for _, user := range repo.users {
+		if user.Email == userData.Email {
+			return
+		}
+	}
+	repo.users = append(repo.users, userData)
 }
 
 func (repo *UserRepository) deleteUser(id int) {
@@ -39,6 +46,7 @@ func (repo *UserRepository) updateUser(updateUser UserData) {
 }
 
 func (repo *UserRepository) retrieveAllUsers() []UserData {
+	fmt.Println(repo.users) //for test
 	return repo.users
 }
 

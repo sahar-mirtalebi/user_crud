@@ -17,5 +17,7 @@ func main() {
 	}
 
 	service.CreateUser(userData)
+	service.CreateUser(userData)
+	service.RetrieveAllUsers()
 
 }

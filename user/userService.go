@@ -23,7 +23,6 @@ func (service *UserService) CreateUser(userData UserData) {
 		Email:     userData.Email,
 	}
 	service.repo.addUser(user)
-	fmt.Printf("user %v created successfully\n", user)
 }
 
 func (service *UserService) UpdateUser(userId int, updatedUserData UserData) {
@@ -46,10 +45,8 @@ func (service *UserService) DeleteUser(userId int) {
 }
 
 func (service *UserService) RetrieveAllUsers() {
-	users := service.repo.retrieveAllUsers()
-	for _, user := range users {
-		fmt.Println(user)
-	}
+	service.repo.retrieveAllUsers()
+
 }
 
 func (service *UserService) RetrieveUserById(userId int) {
