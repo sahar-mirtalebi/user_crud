@@ -44,7 +44,7 @@ func (service *UserService) DeleteUser(userId int) {
 	service.repo.deleteUser(userId)
 }
 
-func (service *UserService) RetrieveAllUsers() []UserData {
+func (service *UserService) RetrieveAllUsers() map[int]UserData {
 	return service.repo.retrieveAllUsers()
 
 }

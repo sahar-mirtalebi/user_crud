@@ -16,18 +16,10 @@ func main() {
 
 	for i := 0; i < 100000; i++ {
 		userData := randomData()
-		if i == 99000 {
-			fmt.Println(userData.UserId)
-			lestItemId = service.CreateUser(userData)
-			fmt.Println(lestItemId)
 
-			break
-		}
-		service.CreateUser(userData)
+		lestItemId = service.CreateUser(userData)
+
 	}
-
-	users := service.RetrieveAllUsers()
-	fmt.Println(users[len(users)-1])
 
 	startTime := time.Now()
 

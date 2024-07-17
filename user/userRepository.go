@@ -11,11 +11,11 @@ type UserData struct {
 }
 
 type UserRepository struct {
-	users []UserData
+	users map[int]UserData
 }
 
 func NewUserRepository() *UserRepository {
-	return &UserRepository{users: make([]UserData, 0)}
+	return &UserRepository{users: make(map[int]UserData)}
 }
 
 func (repo *UserRepository) addUser(userData UserData) {
@@ -24,36 +24,36 @@ func (repo *UserRepository) addUser(userData UserData) {
 			return
 		}
 	}
-	repo.users = append(repo.users, userData)
+	repo.users[userData.UserId] = userData
 }
 
-func (repo *UserRepository) deleteUser(id int) {
-	for i, user := range repo.users {
-		if user.UserId == id {
-			repo.users = append(repo.users[:i], repo.users[i+1:]...)
+func (repo *UserRepository) deleteUser(userId int) {
+	for id := range repo.users {
+		if id == userId {
+			delete(repo.users, userId)
 			return
 		}
 	}
 }
 
 func (repo *UserRepository) updateUser(updateUser UserData) {
-	for i, user := range repo.users {
-		if user.UserId == updateUser.UserId {
-			repo.users[i] = updateUser
+	for id := range repo.users {
+		if id == updateUser.UserId {
+			repo.users[updateUser.UserId] = updateUser
 			return
 		}
 	}
 }
 
-func (repo *UserRepository) retrieveAllUsers() []UserData {
+func (repo *UserRepository) retrieveAllUsers() map[int]UserData {
 	return repo.users
 }
 
-func (repo *UserRepository) retrieveUserById(id int) UserData {
-	for _, user := range repo.users {
-		if user.UserId == id {
-			fmt.Println(user)
-			return user
+func (repo *UserRepository) retrieveUserById(userId int) UserData {
+	for id := range repo.users {
+		if id == userId {
+			fmt.Println(repo.users[userId])
+			return repo.users[userId]
 		}
 	}
 	fmt.Println("user not found")
