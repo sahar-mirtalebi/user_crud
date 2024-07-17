@@ -11,20 +11,23 @@ type UserData struct {
 }
 
 type UserRepository struct {
-	users map[int]UserData
+	users     map[int]UserData
+	userEmail map[string]int
 }
 
 func NewUserRepository() *UserRepository {
-	return &UserRepository{users: make(map[int]UserData)}
+	return &UserRepository{
+		users:     make(map[int]UserData),
+		userEmail: make(map[string]int),
+	}
 }
 
 func (repo *UserRepository) addUser(userData UserData) {
-	for _, user := range repo.users {
-		if user.Email == userData.Email {
-			return
-		}
+	_, exists := repo.userEmail[userData.Email]
+	if !exists {
+		repo.users[userData.UserId] = userData
+		repo.userEmail[userData.Email] = userData.UserId
 	}
-	repo.users[userData.UserId] = userData
 }
 
 func (repo *UserRepository) deleteUser(userId int) {
@@ -50,12 +53,15 @@ func (repo *UserRepository) retrieveAllUsers() map[int]UserData {
 }
 
 func (repo *UserRepository) retrieveUserById(userId int) UserData {
-	for id := range repo.users {
-		if id == userId {
-			fmt.Println(repo.users[userId])
-			return repo.users[userId]
-		}
+
+	user, exists := repo.users[userId]
+
+	if exists {
+		fmt.Println(user)
+		return user
+	} else {
+		fmt.Println("User does not exist.")
+		return UserData{}
 	}
-	fmt.Println("user not found")
-	return UserData{}
+
 }
