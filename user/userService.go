@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -13,7 +12,7 @@ func NewUserServise(repo *UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (service *UserService) CreateUser(userData UserData) {
+func (service *UserService) CreateUser(userData UserData) int {
 
 	user := UserData{
 		UserId:    rand.Intn(1000000),
@@ -23,6 +22,7 @@ func (service *UserService) CreateUser(userData UserData) {
 		Email:     userData.Email,
 	}
 	service.repo.addUser(user)
+	return user.UserId
 }
 
 func (service *UserService) UpdateUser(userId int, updatedUserData UserData) {
@@ -49,11 +49,7 @@ func (service *UserService) RetrieveAllUsers() []UserData {
 
 }
 
-func (service *UserService) RetrieveUserById(userId int) {
-	user, found := service.repo.retrieveUserById(userId)
-	if found {
-		fmt.Println(user)
-	} else {
-		fmt.Println("user not found")
-	}
+func (service *UserService) RetrieveUserById(userId int) UserData {
+	return service.repo.retrieveUserById(userId)
+
 }

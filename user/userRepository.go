@@ -1,5 +1,7 @@
 package user
 
+import "fmt"
+
 type UserData struct {
 	UserId    int
 	FirstName string
@@ -47,11 +49,13 @@ func (repo *UserRepository) retrieveAllUsers() []UserData {
 	return repo.users
 }
 
-func (repo *UserRepository) retrieveUserById(id int) (UserData, bool) {
+func (repo *UserRepository) retrieveUserById(id int) UserData {
 	for _, user := range repo.users {
 		if user.UserId == id {
-			return user, true
+			fmt.Println(user)
+			return user
 		}
 	}
-	return UserData{}, false
+	fmt.Println("user not found")
+	return UserData{}
 }
