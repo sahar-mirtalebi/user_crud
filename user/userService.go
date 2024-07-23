@@ -1,8 +1,6 @@
 package user
 
-import (
-	"math/rand"
-)
+import "gorm.io/gorm"
 
 type UserService struct {
 	repo *UserRepository
@@ -12,44 +10,47 @@ func NewUserServise(repo *UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (service *UserService) CreateUser(userData UserData) int {
+func (service *UserService) CreateUser(userData UserData) (uint, error) {
 
 	user := UserData{
-		UserId:    rand.Intn(1000000),
 		FirstName: userData.FirstName,
 		LastName:  userData.LastName,
 		Age:       userData.Age,
 		Email:     userData.Email,
 	}
-	service.repo.addUser(user)
-	return user.UserId
+	err := service.repo.addUser(user)
+
+	if err != nil {
+		return 0, err
+	} else {
+		return user.ID, nil
+	}
 }
 
-func (service *UserService) UpdateUser(userId int, updatedUserData UserData) {
+func (service *UserService) UpdateUser(userId uint, updatedUserData UserData) error {
 
 	user := UserData{
-		UserId:    userId,
+		Model:     gorm.Model{ID: userId},
 		FirstName: updatedUserData.FirstName,
 		LastName:  updatedUserData.LastName,
 		Age:       updatedUserData.Age,
 		Email:     updatedUserData.Email,
 	}
 
-	service.repo.updateUser(user)
-
+	return service.repo.updateUser(user)
 }
 
-func (service *UserService) DeleteUser(userId int) {
+func (service *UserService) DeleteUser(userId uint) error {
 
-	service.repo.deleteUser(userId)
+	return service.repo.deleteUser(userId)
 }
 
-func (service *UserService) RetrieveAllUsers() map[int]UserData {
+func (service *UserService) RetrieveAllUsers() ([]UserData, error) {
 	return service.repo.retrieveAllUsers()
 
 }
 
-func (service *UserService) RetrieveUserById(userId int) UserData {
+func (service *UserService) RetrieveUserById(userId uint) (UserData, error) {
 	return service.repo.retrieveUserById(userId)
 
 }

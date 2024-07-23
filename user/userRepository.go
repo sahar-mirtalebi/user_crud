@@ -1,67 +1,45 @@
 package user
 
-import "fmt"
+import (
+	"gorm.io/gorm"
+)
 
 type UserData struct {
-	UserId    int
+	gorm.Model
 	FirstName string
 	LastName  string
 	Age       int
-	Email     string
+	Email     string `gorm:"unique"`
 }
 
 type UserRepository struct {
-	users     map[int]UserData
-	userEmail map[string]int
+	db *gorm.DB
 }
 
-func NewUserRepository() *UserRepository {
-	return &UserRepository{
-		users:     make(map[int]UserData),
-		userEmail: make(map[string]int),
-	}
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{db: db}
 }
 
-func (repo *UserRepository) addUser(userData UserData) {
-	_, exists := repo.userEmail[userData.Email]
-	if !exists {
-		repo.users[userData.UserId] = userData
-		repo.userEmail[userData.Email] = userData.UserId
-	}
+func (repo *UserRepository) addUser(userData UserData) error {
+	return repo.db.Create(&userData).Error
 }
 
-func (repo *UserRepository) deleteUser(userId int) {
-	for id := range repo.users {
-		if id == userId {
-			delete(repo.users, userId)
-			return
-		}
-	}
+func (repo *UserRepository) deleteUser(userId uint) error {
+	return repo.db.Delete(&UserData{}, userId).Error
 }
 
-func (repo *UserRepository) updateUser(updateUser UserData) {
-	for id := range repo.users {
-		if id == updateUser.UserId {
-			repo.users[updateUser.UserId] = updateUser
-			return
-		}
-	}
+func (repo *UserRepository) updateUser(userData UserData) error {
+	return repo.db.Save(&userData).Error
 }
 
-func (repo *UserRepository) retrieveAllUsers() map[int]UserData {
-	return repo.users
+func (repo *UserRepository) retrieveAllUsers() ([]UserData, error) {
+	var users []UserData
+	err := repo.db.Find(&users).Error
+	return users, err
 }
 
-func (repo *UserRepository) retrieveUserById(userId int) UserData {
-
-	user, exists := repo.users[userId]
-
-	if exists {
-		fmt.Println(user)
-		return user
-	} else {
-		fmt.Println("User does not exist.")
-		return UserData{}
-	}
-
+func (repo *UserRepository) retrieveUserById(userId uint) (UserData, error) {
+	var user UserData
+	err := repo.db.First(&user, userId).Error
+	return user, err
 }

@@ -2,28 +2,43 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 	"user_CRUD/user"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
 
-	repo := user.NewUserRepository()
+	dsn := "host=localhost user=postgres password=sahar223010 dbname=userdata port=5432 sslmode=disable"
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db.AutoMigrate(&user.UserData{})
+
+	repo := user.NewUserRepository(db)
 	service := user.NewUserServise(repo)
 
-	var lestItemId int
+	var lastItemId uint
 
 	for i := 0; i < 100000; i++ {
 		userData := randomData()
-
-		lestItemId = service.CreateUser(userData)
-
+		userId, err := service.CreateUser(userData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		lastItemId = userId
 	}
 
 	startTime := time.Now()
 
-	service.RetrieveUserById(lestItemId)
+	service.RetrieveUserById(lastItemId)
 
 	endTime := time.Now()
 
