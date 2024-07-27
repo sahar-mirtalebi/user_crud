@@ -12,7 +12,7 @@ func NewUserServise(repo *UserRepository) *UserService {
 
 func (service *UserService) CreateUser(userData UserData) (uint, error) {
 
-	user := UserData{
+	user := &UserData{
 		FirstName: userData.FirstName,
 		LastName:  userData.LastName,
 		Age:       userData.Age,

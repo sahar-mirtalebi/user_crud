@@ -6,10 +6,10 @@ import (
 
 type UserData struct {
 	gorm.Model
-	FirstName string
-	LastName  string
-	Age       int
-	Email     string `gorm:"unique"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Age       int    `json:"age"`
+	Email     string `json:"email" gorm:"unique"`
 }
 
 type UserRepository struct {
@@ -20,7 +20,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (repo *UserRepository) addUser(userData UserData) error {
+func (repo *UserRepository) addUser(userData *UserData) error {
 	return repo.db.Create(&userData).Error
 }
 
