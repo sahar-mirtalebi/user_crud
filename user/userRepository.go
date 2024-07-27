@@ -32,9 +32,9 @@ func (repo *UserRepository) updateUser(userData UserData) error {
 	return repo.db.Save(&userData).Error
 }
 
-func (repo *UserRepository) retrieveAllUsers() ([]UserData, error) {
+func (repo *UserRepository) retrieveAllUsers(offset int, limit int) ([]UserData, error) {
 	var users []UserData
-	err := repo.db.Find(&users).Error
+	err := repo.db.Offset(offset).Limit(limit).Find(&users).Error
 	return users, err
 }
 
