@@ -45,9 +45,9 @@ func (service *UserService) DeleteUser(userId uint) error {
 	return service.repo.deleteUser(userId)
 }
 
-func (service *UserService) RetrieveAllUsers(page int, limit int) ([]UserData, error) {
+func (service *UserService) RetrieveAllUsers(name, email string, page, limit int) ([]UserData, error) {
 	var offset = (page - 1) * 2
-	return service.repo.retrieveAllUsers(offset, limit)
+	return service.repo.retrieveAllUsers(name, email, offset, limit)
 
 }
 

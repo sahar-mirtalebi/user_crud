@@ -70,9 +70,11 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) RetrieveAllUsers(w http.ResponseWriter, r *http.Request) {
-
-	pageStr := r.URL.Query().Get("page")
-	limitStr := r.URL.Query().Get("limit")
+	queryParams := r.URL.Query()
+	name := queryParams.Get("name")
+	email := queryParams.Get("email")
+	pageStr := queryParams.Get("page")
+	limitStr := queryParams.Get("limit")
 
 	page := 1
 	limit := 10
@@ -94,7 +96,7 @@ func (h *UserHandler) RetrieveAllUsers(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	users, err := h.service.RetrieveAllUsers(page, limit)
+	users, err := h.service.RetrieveAllUsers(name, email, page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

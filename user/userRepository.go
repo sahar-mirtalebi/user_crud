@@ -32,9 +32,19 @@ func (repo *UserRepository) updateUser(userData UserData) error {
 	return repo.db.Save(&userData).Error
 }
 
-func (repo *UserRepository) retrieveAllUsers(offset int, limit int) ([]UserData, error) {
+func (repo *UserRepository) retrieveAllUsers(name, email string, offset, limit int) ([]UserData, error) {
 	var users []UserData
-	err := repo.db.Offset(offset).Limit(limit).Find(&users).Error
+
+	query := repo.db
+	if name != "" {
+		query = query.Where("first_name LIKE ? OR last_name LIKE ?", "%"+name+"%", "%"+name+"%")
+	}
+
+	if email != "" {
+		query = query.Where("email like ?", "%"+name+"%")
+	}
+
+	err := query.Offset(offset).Limit(limit).Find(&users).Error
 	return users, err
 }
 
