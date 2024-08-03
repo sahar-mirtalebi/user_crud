@@ -3,9 +3,12 @@ package user
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
+	"sync"
 
 	"github.com/gorilla/mux"
+	"github.com/xuri/excelize/v2"
 )
 
 type UserHandler struct {
@@ -17,6 +20,11 @@ func NewUserHandler(service *UserService) *UserHandler {
 }
 
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var user UserData
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -30,6 +38,64 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]uint{"id": userId})
+}
+
+func (h *UserHandler) ImportUsersFromExcel(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, "Failed to read file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	tempFile, err := os.CreateTemp("", "upload-*.xlsx")
+	if err != nil {
+		http.Error(w, "Failed to create temp file", http.StatusInternalServerError)
+		return
+	}
+	defer os.Remove(tempFile.Name())
+
+	_, err = tempFile.ReadFrom(file)
+	if err != nil {
+		http.Error(w, "Failed to copy file", http.StatusInternalServerError)
+		return
+	}
+	tempFile.Close()
+
+	f, err := excelize.OpenFile(tempFile.Name())
+	if err != nil {
+		http.Error(w, "Failed to open Excel file", http.StatusInternalServerError)
+		return
+	}
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		http.Error(w, "Failed to get rows", http.StatusInternalServerError)
+		return
+	}
+
+	var wg sync.WaitGroup
+	for _, row := range rows {
+		wg.Add(1)
+		go func(row []string) {
+			defer wg.Done()
+			age, _ := strconv.Atoi(row[2])
+			user := UserData{
+				FirstName: row[0],
+				LastName:  row[1],
+				Age:       age,
+				Email:     row[3],
+			}
+			h.service.CreateUser(user)
+		}(row)
+
+	}
+	wg.Wait()
 }
 
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {

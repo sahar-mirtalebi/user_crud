@@ -32,6 +32,7 @@ func main() {
 	router.HandleFunc("/users/{id}", handler.DeleteUser).Methods("DELETE")
 	router.HandleFunc("/users", handler.RetrieveAllUsers).Methods("GET")
 	router.HandleFunc("/users/{id}", handler.RetrieveUserById).Methods("GET")
+	router.HandleFunc("/upload", handler.ImportUsersFromExcel).Methods("POST")
 
 	log.Println("Starting server on :8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
