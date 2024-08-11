@@ -20,19 +20,19 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (repo *UserRepository) addUser(userData *UserData) error {
+func (repo *UserRepository) AddUser(userData *UserData) error {
 	return repo.db.Create(&userData).Error
 }
 
-func (repo *UserRepository) deleteUser(userId uint) error {
+func (repo *UserRepository) DeleteUser(userId uint) error {
 	return repo.db.Delete(&UserData{}, userId).Error
 }
 
-func (repo *UserRepository) updateUser(userData UserData) error {
+func (repo *UserRepository) UpdateUser(userData UserData) error {
 	return repo.db.Save(&userData).Error
 }
 
-func (repo *UserRepository) retrieveAllUsers(name, email string, offset, limit int) ([]UserData, error) {
+func (repo *UserRepository) RetrieveAllUsers(name, email string, offset, limit int) ([]UserData, error) {
 	var users []UserData
 
 	query := repo.db
@@ -48,7 +48,7 @@ func (repo *UserRepository) retrieveAllUsers(name, email string, offset, limit i
 	return users, err
 }
 
-func (repo *UserRepository) retrieveUserById(userId uint) (UserData, error) {
+func (repo *UserRepository) RetrieveUserById(userId uint) (UserData, error) {
 	var user UserData
 	err := repo.db.First(&user, userId).Error
 	return user, err

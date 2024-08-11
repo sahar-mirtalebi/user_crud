@@ -1,7 +1,5 @@
 package user
 
-import "gorm.io/gorm"
-
 type UserService struct {
 	repo *UserRepository
 }
@@ -18,40 +16,30 @@ func (service *UserService) CreateUser(userData UserData) (uint, error) {
 		Age:       userData.Age,
 		Email:     userData.Email,
 	}
-	err := service.repo.addUser(user)
-
+	err := service.repo.AddUser(user)
 	if err != nil {
 		return 0, err
-	} else {
-		return user.ID, nil
 	}
+	return user.ID, nil
+
 }
 
-func (service *UserService) UpdateUser(userId uint, updatedUserData UserData) error {
-
-	user := UserData{
-		Model:     gorm.Model{ID: userId},
-		FirstName: updatedUserData.FirstName,
-		LastName:  updatedUserData.LastName,
-		Age:       updatedUserData.Age,
-		Email:     updatedUserData.Email,
-	}
-
-	return service.repo.updateUser(user)
+func (service *UserService) UpdateUser(updatedUserData UserData) error {
+	return service.repo.UpdateUser(updatedUserData)
 }
 
 func (service *UserService) DeleteUser(userId uint) error {
 
-	return service.repo.deleteUser(userId)
+	return service.repo.DeleteUser(userId)
 }
 
 func (service *UserService) RetrieveAllUsers(name, email string, page, limit int) ([]UserData, error) {
 	var offset = (page - 1) * 2
-	return service.repo.retrieveAllUsers(name, email, offset, limit)
+	return service.repo.RetrieveAllUsers(name, email, offset, limit)
 
 }
 
 func (service *UserService) RetrieveUserById(userId uint) (UserData, error) {
-	return service.repo.retrieveUserById(userId)
+	return service.repo.RetrieveUserById(userId)
 
 }

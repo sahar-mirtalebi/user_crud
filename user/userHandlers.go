@@ -12,11 +12,11 @@ import (
 )
 
 type UserHandler struct {
-	service *UserService
+	operations UserOperations
 }
 
-func NewUserHandler(service *UserService) *UserHandler {
-	return &UserHandler{service: service}
+func NewUserHandler(operations UserOperations) *UserHandler {
+	return &UserHandler{operations: operations}
 }
 
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	userId, err := h.service.CreateUser(user)
+	userId, err := h.operations.CreateUser(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -91,7 +91,7 @@ func (h *UserHandler) ImportUsersFromExcel(w http.ResponseWriter, r *http.Reques
 				Age:       age,
 				Email:     row[3],
 			}
-			h.service.CreateUser(user)
+			h.operations.CreateUser(user)
 		}(row)
 
 	}
@@ -112,7 +112,8 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.service.UpdateUser(uint(userId), user)
+	user.ID = uint(userId)
+	err = h.operations.UpdateUser(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -127,7 +128,7 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.service.DeleteUser(uint(userId))
+	err = h.operations.DeleteUser(uint(userId))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -162,7 +163,7 @@ func (h *UserHandler) RetrieveAllUsers(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	users, err := h.service.RetrieveAllUsers(name, email, page, limit)
+	users, err := h.operations.RetrieveAllUsers(name, email, page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -180,7 +181,7 @@ func (h *UserHandler) RetrieveUserById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user UserData
-	user, err = h.service.RetrieveUserById(uint(userId))
+	user, err = h.operations.RetrieveUserById(uint(userId))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
